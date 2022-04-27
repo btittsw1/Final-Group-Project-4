@@ -22,3 +22,24 @@ fit <- credit_ts %>%
 
 report(fit)
 
+
+#ARIMA
+fit <- credit_ts %>% 
+model(arima210 = ARIMA(ï..credit_in_millions ~ pdq(2,1,0)),
+      arima013 = ARIMA(ï..credit_in_millions ~ pdq(0,1,3)),
+      stepwise = ARIMA(ï..credit_in_millions),
+      search = ARIMA(ï..credit_in_millions, stepwise=FALSE))
+
+glance(fit) %>% arrange(AICc)
+
+
+fit <- credit_ts %>% 
+  model(ARIMA())
+
+report(fit)
+
+fit %>% forecast(h = 12) %>% 
+  autoplot(credit_ts)
+
+
+

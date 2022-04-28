@@ -41,5 +41,23 @@ report(fit)
 fit %>% forecast(h = 12) %>% 
   autoplot(credit_ts)
 
+credit_ts <- credit_ts %>%
+  filter(year(month) >= '1970 Feb')
 
+credit_train <- credit_ts %>%
+  filter(year(month) <= '2004 Jan')
+
+
+fit <- credit_train %>%
+s    Mean = MEAN(),
+    `Naïve` = NAIVE(),
+    `Seasonal naïve` = SNAIVE(),
+    Drift = RW( ~ drift()),
+    tslm = TSLM(~trend())
+  )
+
+fit_fc <- fit %>%
+  forecast(h = 12)
+
+accuracy(fit_fc, credit_ts)
 

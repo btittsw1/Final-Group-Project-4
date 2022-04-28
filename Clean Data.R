@@ -16,13 +16,6 @@ autoplot(credit_ts)
 gg_season(credit_ts)
 
 #Trying different models
-
-fit <- credit_ts %>% 
-        model(TSLM()) 
-
-report(fit)
-
-
 #ARIMA
 fit <- credit_ts %>% 
 model(arima210 = ARIMA(ï..credit_in_millions ~ pdq(2,1,0)),
@@ -41,6 +34,7 @@ report(fit)
 fit %>% forecast(h = 12) %>% 
   autoplot(credit_ts)
 
+
 credit_ts <- credit_ts %>%
   filter(year(month) >= '1970 Feb')
 
@@ -54,10 +48,17 @@ fit <- credit_train %>%
     `Naïve` = NAIVE(),
     `Seasonal naïve` = SNAIVE(),
     Drift = RW( ~ drift()),
-    tslm = TSLM(~trend()))
+    tslm = TSLM(~trend()),
+    ets = ETS(),
+    arima210 = ARIMA(ï..credit_in_millions ~ pdq(2,1,0)),
+    arima013 = ARIMA(ï..credit_in_millions ~ pdq(0,1,3)),
+    stepwise = ARIMA(ï..credit_in_millions),
+    search = ARIMA(ï..credit_in_millions, stepwise=FALSE)
+)
 
 fit_fc <- fit %>%
   forecast(h = 12)
 
-accuracy(fit_fc, credit_ts)
+accuracy(fit_fc, credit_ts) %>% 
+  arrange(RMSE)
 

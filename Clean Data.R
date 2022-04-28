@@ -49,12 +49,12 @@ credit_train <- credit_ts %>%
 
 
 fit <- credit_train %>%
-s    Mean = MEAN(),
+  model (
+    Mean = MEAN(),
     `Naïve` = NAIVE(),
     `Seasonal naïve` = SNAIVE(),
     Drift = RW( ~ drift()),
-    tslm = TSLM(~trend())
-  )
+    tslm = TSLM(~trend()))
 
 fit_fc <- fit %>%
   forecast(h = 12)

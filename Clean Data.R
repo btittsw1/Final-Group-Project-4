@@ -39,7 +39,7 @@ credit_ts <- credit_ts %>%
   filter(year(month) >= '1970 Feb')
 
 credit_train <- credit_ts %>%
-  filter(year(month) <= '2004 Jan')
+  filter(year(month) <= '1985 Jan')
 
 
 fit <- credit_train %>%
@@ -61,4 +61,57 @@ fit_fc <- fit %>%
 
 accuracy(fit_fc, credit_ts) %>% 
   arrange(RMSE)
+
+write.csv(fit_fc, "predictions.csv", row.names = FALSE)
+
+
+fit %>% 
+  select(tslm) %>% 
+  forecast(h=12) %>% 
+  autoplot(credit_ts)
+
+fit %>% 
+  select(`Seasonal naïve`) %>% 
+  forecast(h=12) %>% 
+  autoplot(credit_ts)
+
+fit %>% 
+  select(stepwise) %>% 
+  forecast(h=12) %>% 
+  autoplot(credit_ts)
+
+fit %>% 
+  select(search) %>% 
+  forecast(h=12) %>% 
+  autoplot(credit_ts)
+
+fit %>% 
+  select(ets) %>% 
+  forecast(h=12) %>% 
+  autoplot(credit_ts)
+
+fit %>% 
+  select(tslm) %>% 
+  forecast(h=12) %>% 
+  autoplot(credit_train)
+
+fit %>% 
+  select(`Seasonal naïve`) %>% 
+  forecast(h=12) %>% 
+  autoplot(credit_train)
+
+fit %>% 
+  select(stepwise) %>% 
+  forecast(h=12) %>% 
+  autoplot(credit_train)
+
+fit %>% 
+  select(search) %>% 
+  forecast(h=12) %>% 
+  autoplot(credit_ts)
+
+fit %>% 
+  select(ets) %>% 
+  forecast(h=12) %>% 
+  autoplot(credit_train)
 

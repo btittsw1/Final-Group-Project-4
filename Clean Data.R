@@ -62,7 +62,13 @@ fit_fc <- fit %>%
 accuracy(fit_fc, credit_ts) %>% 
   arrange(RMSE)
 
-write.csv(fit_fc, "predictions.csv", row.names = FALSE)
+fit_fc_final <- fit %>%
+  select(tslm) %>% 
+  forecast(h = 12)
+
+accuracy(fit_fc_final, credit_ts) 
+
+write.csv(fit_fc_final, "predictions.csv", row.names = FALSE)
 
 
 fit %>% 

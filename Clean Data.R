@@ -34,12 +34,9 @@ report(fit)
 fit %>% forecast(h = 12) %>% 
   autoplot(credit_ts)
 
+credit_train <- head(credit_ts, nrow(credit_ts) - 180)
 
-credit_ts <- credit_ts %>%
-  filter(year(month) >= '1970 Feb')
-
-credit_train <- credit_ts %>%
-  filter(year(month) <= '1985 Jan')
+credit_test <- tail(credit_ts, 180)
 
 
 fit <- credit_train %>%
@@ -62,8 +59,16 @@ fit_fc <- fit %>%
 accuracy(fit_fc, credit_ts) %>% 
   arrange(RMSE)
 
+fit %>%
+  forecast(credit_test) %>%
+  autoplot(credit_test)
+
+fit %>%
+  forecast(credit_test) %>%
+  autoplot(credit_ts)
+
 fit_fc_final <- fit %>%
-  select(tslm) %>% 
+  select(ets) %>% 
   forecast(h = 12)
 
 accuracy(fit_fc_final, credit_ts) 

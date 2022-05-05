@@ -34,9 +34,9 @@ report(fit)
 fit %>% forecast(h = 12) %>% 
   autoplot(credit_ts)
 
-credit_train <- head(credit_ts, nrow(credit_ts) - 180)
+credit_train <- head(credit_ts, nrow(credit_ts) - 60)
 
-credit_test <- tail(credit_ts, 180)
+credit_test <- tail(credit_ts, 60)
 
 
 fit <- credit_train %>%
@@ -53,76 +53,52 @@ fit <- credit_train %>%
     search = ARIMA(ï..credit_in_millions, stepwise=FALSE)
 )
 
+fit %>%
+  forecast(h=12) %>%
+  accuracy(credit_train) %>%
+  arrange(RMSE)
+
+fit <- credit_train %>%
+  model(ETS(ï..credit_in_millions))
+
+report(fit)
+
+gg_tsresiduals(fit)
+
 fit_fc <- fit %>%
   forecast(h = 12)
 
 accuracy(fit_fc, credit_ts) %>% 
   arrange(RMSE)
 
-fit %>%
-  forecast(credit_test) %>%
-  autoplot(credit_test)
-
-fit %>%
-  forecast(credit_test) %>%
+fit %>% 
+  select(ets) %>% 
+  forecast(h=12) %>% 
   autoplot(credit_ts)
 
-fit_fc_final <- fit %>%
+fit %>% 
   select(ets) %>% 
-  forecast(h = 12)
+  forecast(h=12) %>% 
+  autoplot(credit_train)
+
+credit_ts %>%
+  model(ETS()) %>%
+  forecast(h=12) %>%
+  autoplot(credit_ts)
+
+#predictions
+credit_ts %>%
+  model(ETS()) %>%
+  forecast(h=12)
+
+#store predictions
+pred <- credit_ts %>%
+  model(ETS()) %>%
+  forecast(h=12)
+
+fit_fc_final <- pred
+
 
 accuracy(fit_fc_final, credit_ts) 
 
 write.csv(fit_fc_final, "predictions.csv", row.names = FALSE)
-
-
-fit %>% 
-  select(tslm) %>% 
-  forecast(h=12) %>% 
-  autoplot(credit_ts)
-
-fit %>% 
-  select(`Seasonal naïve`) %>% 
-  forecast(h=12) %>% 
-  autoplot(credit_ts)
-
-fit %>% 
-  select(stepwise) %>% 
-  forecast(h=12) %>% 
-  autoplot(credit_ts)
-
-fit %>% 
-  select(search) %>% 
-  forecast(h=12) %>% 
-  autoplot(credit_ts)
-
-fit %>% 
-  select(ets) %>% 
-  forecast(h=12) %>% 
-  autoplot(credit_ts)
-
-fit %>% 
-  select(tslm) %>% 
-  forecast(h=12) %>% 
-  autoplot(credit_train)
-
-fit %>% 
-  select(`Seasonal naïve`) %>% 
-  forecast(h=12) %>% 
-  autoplot(credit_train)
-
-fit %>% 
-  select(stepwise) %>% 
-  forecast(h=12) %>% 
-  autoplot(credit_train)
-
-fit %>% 
-  select(search) %>% 
-  forecast(h=12) %>% 
-  autoplot(credit_ts)
-
-fit %>% 
-  select(ets) %>% 
-  forecast(h=12) %>% 
-  autoplot(credit_train)
-
